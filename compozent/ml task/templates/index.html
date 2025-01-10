@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Time Prediction</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #faf4fc;
+            color: #0c0a0a;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #f0dddd;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0c0a0a;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #0c0a0a;
+        }
+
+        form input[type="number"] {
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        form input[type="number"]:focus {
+            border-color: #f79feb;
+            box-shadow: 0 0 5px rgba(245, 226, 240, 0.5);
+        }
+
+        form button {
+            padding: 14px;
+            background-color: #f7838d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #834e67;
+        }
+
+        h2 {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #0c0a0a;
+            text-align: center;
+        }
+
+        #result {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #c23b8e;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Predict Sleep Time</h1>
+        <form id="predict-form">
+            <label for="workoutTime">Workout Time (hours):</label>
+            <input type="number" id="workoutTime" required step="any"><br>
+
+            <label for="readingTime">Reading Time (hours):</label>
+            <input type="number" id="readingTime" required step="any"><br>
+
+            <label for="phoneTime">Phone Time (hours):</label>
+            <input type="number" id="phoneTime" required step="any"><br>
+
+            <label for="workHours">Work Hours:</label>
+            <input type="number" id="workHours" required step="any"><br>
+
+            <label for="caffeineIntake">Caffeine Intake (mg):</label>
+            <input type="number" id="caffeineIntake" required step="any"><br>
+
+            <label for="relaxationTime">Relaxation Time (hours):</label>
+            <input type="number" id="relaxationTime" required step="any"><br>
+
+            <button type="submit">Predict Sleep Time</button>
+        </form>
+
+        <h2>Prediction Result</h2>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Handle form submission
+        $("#predict-form").submit(function(event) {
+            event.preventDefault();  // Prevent page refresh
+
+            // Get input values from the form
+            const data = {
+                WorkoutTime: parseFloat($("#workoutTime").val()),
+                ReadingTime: parseFloat($("#readingTime").val()),
+                PhoneTime: parseFloat($("#phoneTime").val()),
+                WorkHours: parseFloat($("#workHours").val()),
+                CaffeineIntake: parseFloat($("#caffeineIntake").val()),
+                RelaxationTime: parseFloat($("#relaxationTime").val())
+            };
+
+            // Send a POST request to the Flask API
+            $.ajax({
+                url: "http://127.0.0.1:5000/predict",  // Flask API endpoint
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function(response) {
+                    // Display the result
+                    $("#result").text("Predicted Sleep Time: " + response['Predicted Sleep Time'] + " hours");
+                },
+                error: function() {
+                    $("#result").text("Error predicting sleep time. Please try again.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
